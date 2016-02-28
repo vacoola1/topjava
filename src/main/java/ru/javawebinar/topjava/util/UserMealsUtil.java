@@ -3,15 +3,10 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * GKislin
@@ -33,9 +28,7 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO0 return filtered list with correctly exceeded field
 
-        List<UserMealWithExceed> mealWithExceedList = new ArrayList<>();
         Map<LocalDate, Integer> dateMap = new HashMap<>();
 
         for (UserMeal userMeal : mealList) {
@@ -43,14 +36,11 @@ public class UserMealsUtil {
             dateMap.put(userMeal.getDateTime().toLocalDate(), caloris);
         }
 
-        for (UserMeal userMeal : mealList) {
-            if (startTime.compareTo(userMeal.getDateTime().toLocalTime()) <= 0 && endTime.compareTo(userMeal.getDateTime().toLocalTime()) >= 0) {
-                mealWithExceedList.add(new UserMealWithExceed(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), dateMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay));
-            }
-        }
+        return mealList
+                .stream()
+                .filter((t) -> TimeUtil.isBetween(t.getDateTime().toLocalTime(), startTime, endTime))
+                .map(userMeal -> new UserMealWithExceed(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), dateMap.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        mealWithExceedList.forEach(System.out::println);
-
-        return mealWithExceedList;
     }
 }
