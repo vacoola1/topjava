@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.UserMeal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by r.vakulenko on 10.03.2016.
@@ -44,6 +45,9 @@ public class UserMealDaoImplMap implements UserMealDao {
 
     @Override
     public void addUserMeal(UserMeal meal) {
+        if (meal == null) {
+            return;
+        }
         synchronized (userMeals) {
             userMeals.put(meal.getId(), meal);
         }
@@ -52,11 +56,17 @@ public class UserMealDaoImplMap implements UserMealDao {
 
     @Override
     public boolean updateUserMeal(UserMeal meal) {
+        if (meal == null) {
+            return false;
+        }
         return userMeals.containsKey(meal.getId());
     }
 
     @Override
     public void deleteUserMeal(UserMeal meal) {
+        if (meal == null) {
+            return;
+        }
         synchronized (userMeals) {
             userMeals.remove(meal.getId());
         }
@@ -64,7 +74,7 @@ public class UserMealDaoImplMap implements UserMealDao {
 
     @Override
     public List<UserMeal> getAllUserMeal() {
-        return (List<UserMeal>) userMeals.values();
+        return userMeals.values().stream().collect(Collectors.toList());
     }
 
     @Deprecated
@@ -100,4 +110,10 @@ public class UserMealDaoImplMap implements UserMealDao {
             return userMeals;
         }
     }
+
+    @Override
+    public UserMeal getUserMealById(int id) {
+        return userMeals.getOrDefault(id, null);
+    }
+
 }

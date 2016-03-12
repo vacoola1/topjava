@@ -41,6 +41,10 @@ public class UserMealWithExceed {
         return exceed;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "UserMealWithExceed{" +

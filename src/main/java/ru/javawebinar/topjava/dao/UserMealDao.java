@@ -15,4 +15,6 @@ public interface UserMealDao {
     void deleteUserMeal(UserMeal meal);
 
     List<UserMeal> getAllUserMeal();
+
+    UserMeal getUserMealById(int id);
 }

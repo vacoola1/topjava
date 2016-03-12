@@ -21,6 +21,7 @@
         <th>description</th>
         <th>calories</th>
         <th>exceed</th>
+        <th colspan=2>Action</th>
     </tr>
     <c:forEach items="${requestScope.mealList}" var="meal">
 
@@ -34,14 +35,17 @@
         </c:choose>
 
         <tr bgcolor=${mealsColor}>
-            <td><c:out value="${meal.getDateTime().toLocalDate()}"></c:out></td>
+            <td><c:out value="${meal.getDateTime().toLocalDate()} ${meal.getDateTime().toLocalTime()}"></c:out></td>
             <td><c:out value="${meal.getDescription()}"></c:out></td>
             <td><c:out value="${meal.getCalories()}"></c:out></td>
             <td><c:out value="${meal.isExceed()}"></c:out></td>
+            <td><a href="meal?action=edit&mealId=<c:out value="${meal.getId()}"/>">Update</a></td>
+            <td><a href="meal?action=delete&mealId=<c:out value="${meal.getId()}"/>">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>
 </table>
+<p><a href="meal?action=add">Add Meal</a></p>
 
 </body>
 </html>
