@@ -44,4 +44,3 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
         return repository.values();
     }
 }
-
