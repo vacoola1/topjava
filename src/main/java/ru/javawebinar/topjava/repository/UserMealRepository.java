@@ -2,7 +2,9 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.UserMeal;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 /**
  * GKislin
@@ -11,9 +13,11 @@ import java.util.Collection;
 public interface UserMealRepository {
     UserMeal save(UserMeal userMeal);
 
-    void delete(int id);
+    boolean delete(Integer userId, int id);
 
-    UserMeal get(int id);
+    UserMeal get(Integer userId, int id);
 
-    Collection<UserMeal> getAll();
+    List<UserMeal> getAll(Integer userId);
+
+    List<UserMeal> getFiltered(Integer userId, LocalDate startDate, LocalDate endDate);
 }
