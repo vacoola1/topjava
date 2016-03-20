@@ -10,7 +10,6 @@ import ru.javawebinar.topjava.model.BaseEntity;
  */
 public class LoggedUser {
     public static int id = BaseEntity.START_SEQ;
-
     public static int id() {
         return id;
     }
