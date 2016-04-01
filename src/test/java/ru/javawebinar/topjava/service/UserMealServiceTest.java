@@ -1,7 +1,15 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -11,8 +19,7 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.time.*;
 import java.util.Arrays;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -27,6 +34,39 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class UserMealServiceTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UserMealServiceTest.class);
+
+    @Rule
+    public TestRule watchman = new TestWatcher() {
+
+
+        private LocalDateTime startTest;
+        private LocalDateTime endTest;
+
+        @Override
+        public Statement apply(Statement base, Description description) {
+            return super.apply(base, description);
+        }
+
+        @Override
+        protected void starting(Description description) {
+            startTest = LocalDateTime.now();
+            super.starting(description);
+        }
+
+        @Override
+        protected void finished(Description description) {
+            endTest = LocalDateTime.now();
+            super.finished(description);
+
+            Duration duration = Duration.between(startTest, endTest);
+            LOG.debug("TEST DURATION: " + duration.toMillis() + " ms");
+        }
+    };
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @Autowired
     protected UserMealService service;
 
@@ -36,8 +76,9 @@ public class UserMealServiceTest {
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2), service.getAll(USER_ID));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test/*(expected = NotFoundException.class)*/
     public void testDeleteNotFound() throws Exception {
+        exception.expect(NotFoundException.class);
         service.delete(MEAL1_ID, 1);
     }
 
@@ -62,13 +103,13 @@ public class UserMealServiceTest {
     @Test
     public void testUpdate() throws Exception {
         UserMeal updated = getUpdated();
-        service.update(updated, USER_ID);
+         service.update(updated, USER_ID);
         MATCHER.assertEquals(updated, service.get(MEAL1_ID, USER_ID));
     }
 
     @Test(expected = NotFoundException.class)
     public void testNotFoundUpdate() throws Exception {
-        UserMeal item = service.get(MEAL1_ID, USER_ID);
+        UserMeal item = service.get(MEAL1_ID, ADMIN_ID);
         service.update(item, ADMIN_ID);
     }
 
