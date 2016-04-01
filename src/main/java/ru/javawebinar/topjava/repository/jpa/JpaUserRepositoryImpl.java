@@ -15,6 +15,7 @@ import java.util.List;
  * Date: 29.08.2014
  */
 @Repository
+@Transactional
 public class JpaUserRepositoryImpl implements UserRepository {
 
 /*
@@ -46,6 +47,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
 
 /*      User ref = em.getReference(User.class, id);
