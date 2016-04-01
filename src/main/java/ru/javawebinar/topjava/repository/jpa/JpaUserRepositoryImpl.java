@@ -66,7 +66,7 @@ public class JpaUserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        Query query = em.createQuery("SELECT u FROM User u");
+        Query query = em.createQuery("SELECT u FROM User u ORDER BY u.name, u.email");
         return query.getResultList();
     }
 

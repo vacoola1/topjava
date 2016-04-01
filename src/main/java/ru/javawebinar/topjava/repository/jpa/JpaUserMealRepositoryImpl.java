@@ -26,6 +26,7 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
     private EntityManager em;
 
     @Override
+    @Transactional
     public UserMeal save(UserMeal userMeal, int userId) {
         if (userMeal.isNew()) {
 
@@ -43,6 +44,7 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
 
         Query query = em.createQuery("DELETE FROM UserMeal um WHERE um.userId = :userId AND um.id=:id");
@@ -54,9 +56,10 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
 
     @Override
     public UserMeal get(int id, int userId) {
-        Query query = em.createQuery("SELECT um FROM UserMeal um WHERE um.userId=:userId AND um.id = :id");
+        Query query = em.createQuery("SELECT um FROM UserMeal um WHERE um.user =:user AND um.id = :id");
+        User ref = em.getReference(User.class, userId);
         return (UserMeal) query
-                .setParameter("userId", userId)
+                .setParameter("user", ref)
                 .setParameter("id", id)
                 .getSingleResult();
     }
