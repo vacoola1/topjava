@@ -15,7 +15,7 @@ import java.util.List;
  * Date: 29.08.2014
  */
 @Repository
-@Transactional
+@Transactional(readOnly = true)
 public class JpaUserRepositoryImpl implements UserRepository {
 
 /*
