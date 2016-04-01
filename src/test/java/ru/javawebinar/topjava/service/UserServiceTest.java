@@ -74,7 +74,7 @@ public class UserServiceTest {
     @Test
     public void testGetAll() throws Exception {
         Collection<User> all = service.getAll();
-        MATCHER.assertCollectionEquals(Arrays.asList(ADMIN, USER), all);
+        MATCHER.assertCollectionEquals(Arrays.asList(USER, ADMIN), all);
     }
 
     @Test

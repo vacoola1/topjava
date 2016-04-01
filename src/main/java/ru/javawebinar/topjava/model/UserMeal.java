@@ -20,9 +20,8 @@ public class UserMeal extends BaseEntity {
     @Column(name = "calories")
     protected int calories;
 
-    @Column(name = "user_id")
     @ManyToOne
-    @JoinColumn (name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
 
