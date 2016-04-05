@@ -19,10 +19,14 @@ import java.util.List;
 public class SpringMain {
     public static void main(String[] args) {
         // java 7 Automatic resource management
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml","spring/mock.xml")) {
+        System.setProperty("spring.profiles.active", Profiles.POSTGRES+","+Profiles.JDBC);
+        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml"))
+        {
+            appCtx.getEnvironment().setActiveProfiles(Profiles.HSQLDB,Profiles.JDBC);
             System.out.println(Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-            System.out.println(adminUserController.create(UserTestData.USER));
+
+            System.out.println(adminUserController.create(UserTestData.USER1));
             System.out.println();
 
             UserMealRestController mealController = appCtx.getBean(UserMealRestController.class);
@@ -32,5 +36,6 @@ public class SpringMain {
                             LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0));
             filteredMealsWithExceeded.forEach(System.out::println);
         }
+
     }
 }

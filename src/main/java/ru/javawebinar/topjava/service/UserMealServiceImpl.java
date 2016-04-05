@@ -25,6 +25,11 @@ public class UserMealServiceImpl implements UserMealService {
     }
 
     @Override
+    public UserMeal getWithUser(int id, int userId) {
+        return ExceptionUtil.check(repository.getWithUser(id, userId), id);
+    }
+
+    @Override
     public void delete(int id, int userId) {
         ExceptionUtil.check(repository.delete(id, userId), id);
     }

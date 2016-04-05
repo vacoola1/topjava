@@ -19,9 +19,15 @@ public interface UserMealRepository {
     // null if meal do not belong to userId
     UserMeal get(int id, int userId);
 
+    // null if meal do not belong to userId
+    default UserMeal getWithUser(int id, int userId) {
+        return null;
+    }
+
     // ORDERED dateTime
     Collection<UserMeal> getAll(int userId);
 
     // ORDERED dateTime
     Collection<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId);
+
 }

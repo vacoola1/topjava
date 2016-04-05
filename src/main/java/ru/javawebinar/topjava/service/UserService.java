@@ -2,9 +2,11 @@ package ru.javawebinar.topjava.service;
 
 
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: gkislin
@@ -23,4 +25,11 @@ public interface UserService {
     List<User> getAll();
 
     void update(User user);
+
+    void evictCache();
+
+    default User getWithMeals(int id) throws NotFoundException {
+        return null;
+    }
+
 }
