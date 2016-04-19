@@ -1,13 +1,14 @@
 package ru.javawebinar.topjava;
 
+import org.springframework.core.CollectionFactory;
+import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.matcher.ModelMatcher;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.UserMealsUtil;
 
-import java.util.EnumSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.model.BaseEntity.START_SEQ;
 
@@ -20,14 +21,14 @@ public class UserTestData {
     public static final int ADMIN_ID = START_SEQ + 1;
 
     public static final User USER = new User(USER_ID, "User", "user@yandex.ru", "password", Role.ROLE_USER);
-    public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN);
+    public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ROLE_ADMIN, Role.ROLE_USER);
 
     public static final ModelMatcher<User, TestUser> MATCHER = new ModelMatcher<>(u -> ((u instanceof TestUser) ? (TestUser) u : new TestUser(u)));
 
     public static class TestUser extends User {
 
         public TestUser(User u) {
-            this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCaloriesPerDay(), u.isEnabled(), u.getRoles());
+            this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCaloriesPerDay(), u.isEnabled(), u.getRoles().stream().collect(Collectors.toSet()));
         }
 
         public TestUser(String name, String email, String password, Role role, Role... roles) {
@@ -69,7 +70,8 @@ public class UserTestData {
                     && Objects.equals(this.name, that.name)
                     && Objects.equals(this.email, that.email)
                     && Objects.equals(this.caloriesPerDay, that.caloriesPerDay)
-                    && Objects.equals(this.enabled, that.enabled);
+                    && Objects.equals(this.enabled, that.enabled)
+                    && (that.roles!= null && this!= null && this.roles.size() == that.roles.size() && this.roles.containsAll(that.roles));
         }
     }
 }
