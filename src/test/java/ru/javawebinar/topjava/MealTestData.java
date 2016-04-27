@@ -3,9 +3,13 @@ package ru.javawebinar.topjava;
 import ru.javawebinar.topjava.TestUtil.ToStringModelMatcher;
 import ru.javawebinar.topjava.matcher.ModelMatcher;
 import ru.javawebinar.topjava.model.UserMeal;
+import ru.javawebinar.topjava.to.UserMealWithExceed;
+import ru.javawebinar.topjava.util.UserMealsUtil;
 
+import javax.swing.*;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.time.LocalDateTime.of;
@@ -40,4 +44,12 @@ public class MealTestData {
     public static UserMeal getUpdated() {
         return new UserMeal(MEAL1_ID, MEAL1.getDateTime(), "Обновленный завтрак", 200);
     }
+
+    public static final List<UserMealWithExceed> USER_MEAL_WITH_EXCEEDS = UserMealsUtil.getWithExceeded(USER_MEALS, LoggedUser.getCaloriesPerDay());
+
+    public static final UserMealWithExceed MEAL1_WITH_EXCEED = USER_MEAL_WITH_EXCEEDS.stream()
+            .filter(userMealWithExceed -> userMealWithExceed.getId().equals(MEAL1_ID))
+            .findFirst().get();
+
+
 }
