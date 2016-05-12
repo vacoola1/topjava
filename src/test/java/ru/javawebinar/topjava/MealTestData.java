@@ -22,6 +22,7 @@ import static ru.javawebinar.topjava.model.BaseEntity.START_SEQ;
 public class MealTestData {
 
     public static final ModelMatcher<UserMeal, String> MATCHER = new ToStringModelMatcher<>(UserMeal.class);
+    public static final ModelMatcher<UserMealWithExceed, String> MATCHER_WITH_EXCEEDS = new ToStringModelMatcher<>(UserMealWithExceed.class);
 
     public static final int MEAL1_ID = START_SEQ + 2;
     public static final int ADMIN_MEAL_ID = START_SEQ + 8;
@@ -50,6 +51,8 @@ public class MealTestData {
     public static final UserMealWithExceed MEAL1_WITH_EXCEED = USER_MEAL_WITH_EXCEEDS.stream()
             .filter(userMealWithExceed -> userMealWithExceed.getId().equals(MEAL1_ID))
             .findFirst().get();
+
+    public static final List<UserMealWithExceed> MEAL_WITH_EXCEEDS_BETWEEN = UserMealsUtil.getWithExceeded(Arrays.asList(MEAL3, MEAL2, MEAL1) , LoggedUser.getCaloriesPerDay());
 
 
 }

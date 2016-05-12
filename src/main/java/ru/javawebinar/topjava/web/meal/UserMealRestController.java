@@ -1,19 +1,18 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.UserMeal;
-import ru.javawebinar.topjava.util.TimeUtil;
+import ru.javawebinar.topjava.to.UserMealWithExceed;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
+import java.net.URI;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * GKislin
@@ -24,65 +23,48 @@ import java.util.Objects;
 public class UserMealRestController extends AbstractUserMealController {
     static final String REST_URL = "/rest/meals";
 
-/*    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String mealList(Model model) {
-        model.addAttribute("mealList", super.getAll());
-        return "mealList";
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserMeal get(@PathVariable("id") int id) {
+        return super.get(id);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String delete(HttpServletRequest request) {
-        super.delete(getId(request));
-        return "redirect:/meals";
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserMealWithExceed> getAll() {
+        return super.getAll();
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public String editForUpdate(HttpServletRequest request, Model model) {
-        model.addAttribute("meal", super.get(getId(request)));
-        return "mealEdit";
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserMeal> createWithLocation(@RequestBody UserMeal meal) {
+        UserMeal created = super.create(meal);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(uriOfNewResource);
+
+        return new ResponseEntity<>(created, httpHeaders, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String editForCreate(Model model) {
-        model.addAttribute("meal", new UserMeal(LocalDateTime.now(), "", 1000));
-        return "mealEdit";
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void update(@RequestBody UserMeal meal, @PathVariable("id") int id) {
+        super.update(meal, id);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public String updateOrCreate(HttpServletRequest request) {
-        String id = request.getParameter("id");
-        UserMeal userMeal = new UserMeal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.valueOf(request.getParameter("calories")));
-
-        if (userMeal.isNew()) {
-            super.create(userMeal);
-        } else {
-            super.update(userMeal, userMeal.getId());
-        }
-        return "redirect:/meals";
+    @RequestMapping(value = "/t/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updatetest(@PathVariable("id") int id) {
+        int a = 1;
     }
 
-    @RequestMapping(value = "/filter", method = RequestMethod.POST)
-    public String getBetween(HttpServletRequest request, Model model) {
-        LocalDate startDate = TimeUtil.parseLocalDate(resetParam("startDate", request));
-        LocalDate endDate = TimeUtil.parseLocalDate(resetParam("endDate", request));
-        LocalTime startTime = TimeUtil.parseLocalTime(resetParam("startTime", request));
-        LocalTime endTime = TimeUtil.parseLocalTime(resetParam("endTime", request));
-        model.addAttribute("mealList", super.getBetween(startDate, startTime, endDate, endTime));
-        return "mealList";
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") int id) {
+        super.delete(id);
     }
 
-    private String resetParam(String param, HttpServletRequest request) {
-        String value = request.getParameter(param);
-        request.setAttribute(param, value);
-        return value;
-    }
 
-    private int getId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.valueOf(paramId);
-    }*/
+    @RequestMapping(value = "/filter", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserMealWithExceed> getBetween(@RequestParam("startDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime, @RequestParam("endDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+        return super.getBetween(startDateTime.toLocalDate(), startDateTime.toLocalTime(), endDateTime.toLocalDate(), endDateTime.toLocalTime());
+    }
 
 }
