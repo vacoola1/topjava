@@ -13,6 +13,11 @@ function makeEditable() {
         return false;
     });
 
+    $('#filtersForm').change(function () {
+        updateTable();
+        return false;
+    });
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
     });
@@ -30,7 +35,8 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(ajaxUrl, function (data) {
+    var form = $('#filtersForm');
+    $.get(ajaxUrl+"filter", form.serialize() ,function (data) {
         datatableApi.fnClearTable();
         $.each(data, function (key, item) {
             datatableApi.fnAddData(item);
@@ -41,7 +47,6 @@ function updateTable() {
 
 function save() {
     var form = $('#detailsForm');
-    debugger;
     $.ajax({
         type: "POST",
         url: ajaxUrl,
@@ -54,7 +59,8 @@ function save() {
     });
 }
 
-var failedNote;
+var
+    failedNote;
 
 function closeNoty() {
     if (failedNote) {
