@@ -20,10 +20,10 @@ import java.util.List;
 public class UserMealAjaxController extends AbstractUserMealController {
     public static final String REST_URL = "/ajax/meals";
 
-    @RequestMapping(method = RequestMethod.GET)
+/*    @RequestMapping(method = RequestMethod.GET)
     public List<UserMealWithExceed> getAll() {
         return super.getAll();
-    }
+    }*/
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") int id) {
@@ -44,7 +44,7 @@ public class UserMealAjaxController extends AbstractUserMealController {
         }
     }
 
-    @RequestMapping(value = "/filter", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public List<UserMealWithExceed> getBetween(
             @RequestParam(value = "startDate", required = false) LocalDate startDate, @RequestParam(value = "startTime", required = false) LocalTime startTime,
             @RequestParam(value = "endDate", required = false) LocalDate endDate, @RequestParam(value = "endTime", required = false) LocalTime endTime) {

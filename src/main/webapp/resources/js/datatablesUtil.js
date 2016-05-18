@@ -13,6 +13,12 @@ function makeEditable() {
         return false;
     });
 
+
+    $('.enabled').change(function () {
+        enabled($(this).attr("id"), $(this).prop("checked"));
+        return false;
+    });
+
     $('#filtersForm').change(function () {
         updateTable();
         return false;
@@ -20,6 +26,13 @@ function makeEditable() {
 
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(event, jqXHR, options, jsExc);
+    });
+}
+
+function enabled(id, enabled) {
+    $.post(ajaxUrl+id, "enabled="+enabled, function () {
+        updateTable();
+        successNoty((enabled)?'Enabled':"Disabled");
     });
 }
 
@@ -35,13 +48,10 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    var form = $('#filtersForm');
-    $.get(ajaxUrl+"filter", form.serialize() ,function (data) {
-        datatableApi.fnClearTable();
-        $.each(data, function (key, item) {
-            datatableApi.fnAddData(item);
-        });
-        datatableApi.fnDraw();
+    $.get(ajaxUrl, $('#filtersForm').serialize() ,function (data) {
+        datatableApi.clear();
+        datatableApi.rows.add(data);
+        datatableApi.draw();
     });
 }
 

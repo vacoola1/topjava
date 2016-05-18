@@ -37,4 +37,13 @@ public class AdminAjaxController extends AbstractUserController {
             super.update(user, id);
         }
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    public void updateEnabled(@PathVariable("id") int id,
+                               @RequestParam("enabled") boolean enabled) {
+
+        User user = super.get(id);
+        user.setEnabled(enabled);
+        super.update(user, id);
+    }
 }
